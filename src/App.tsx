@@ -2,6 +2,17 @@ import { useEffect, useState } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
+import { initializeApp } from 'firebase-admin/app'
+import { getDatabase } from 'firebase-admin/database'
+
+const firebaseConfig = {
+	databaseURL:
+		'https://botclientmouse-default-rtdb.europe-west1.firebasedatabase.app/',
+}
+
+const app = initializeApp(firebaseConfig)
+
+const database = getDatabase(app)
 
 const App = () => {
 	const [points, setPoints] = useState(0)
