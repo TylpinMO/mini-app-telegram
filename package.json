@@ -1,5 +1,5 @@
 {
-	"name": "notcoin-telegram-mini-app-clone",
+	"name": "Mickey-MouseToken",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -10,8 +10,11 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"firebase-admin": "^12.4.0",
+		"node-telegram-bot-api": "^0.66.0",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"telegraf": "^4.16.3"
 	},
 	"devDependencies": {
 		"@types/react": "^18.2.66",
