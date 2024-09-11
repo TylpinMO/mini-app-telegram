@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	font-family: sans-serif;
+}
+
+@keyframes float {
+	0% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+}
+
+.bg-gradient-main {
+	background: linear-gradient(to top, #083b94, #095a6a);
+}
+
+.bg-gradient-overlay {
+	background: linear-gradient(
+		180deg,
+		rgb(176, 193, 201) 0%,
+		rgb(150, 175, 184) 40%,
+		rgba(171, 216, 224, 0) 100%
+	);
+}
+
+.radial-gradient-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: radial-gradient(
+		circle,
+		rgba(117, 175, 165, 0.8) 0%,
+		rgba(250, 214, 92, 0) 60%
+	);
+}
