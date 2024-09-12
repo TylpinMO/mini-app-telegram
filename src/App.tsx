@@ -53,28 +53,47 @@ const App = () => {
     // .catch((error) => {
     //     console.error("Ошибка при получении данных:", error);
     // });
-	const getStartNum = (dbref: DatabaseReference) => {
-		var start_user_points_score = 0
+	// const getStartNum = (dbref: DatabaseReference) => {
+	// 	var start_user_points_score = 0
 		
-		get(dbref).then((snapshot) => {
-			if (snapshot.exists()) {
-				console.log("Данные:", snapshot.val());
-				start_user_points_score =  snapshot.val()
-				// console.log("Данные:", start_user_points_score);
-			} else {
-				console.log("Нет данных");
-			}})
-		return start_user_points_score;
-	}
-
-	const [points, setPoints] = useState(getStartNum(dbRef))
+	// 	get(dbref).then((snapshot) => {
+	// 		if (snapshot.exists()) {
+	// 			console.log("Данные:", snapshot.val());
+	// 			start_user_points_score =  snapshot.val()
+	// 			// console.log("Данные:", start_user_points_score);
+	// 		} else {
+	// 			console.log("Нет данных");
+	// 		}})
+	// 	return start_user_points_score;
+	// }
+	// var startNummmm = 3
+	const [points, setPoints] = useState(2)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
 	)
-	const pointsToAdd = 1
+	useEffect(() => {
+		const getStartNum = async (dbref: DatabaseReference) => {
+		  try {
+			const snapshot = await get(dbref);
+			if (snapshot.exists()) {
+			  console.log("Данные:", snapshot.val());
+			  setPoints(snapshot.val()); // Устанавливаем значение в состояние
+			} else {
+			  console.log("Нет данных");
+			}
+		  } catch (error) {
+			console.error("Ошибка при получении данных:", error);
+		  }
+		};
+	
+		getStartNum(dbRef);
+	  }, [dbRef]);
+	  
+	  const pointsToAdd = 1
 	const energyToReduce = 1
 	
+
 	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
