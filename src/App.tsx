@@ -21,7 +21,7 @@ const App = () => {
 	const pointsToAdd = 1
 	const energyToReduce = 1
 
-	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleClick = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
 		}
@@ -33,10 +33,10 @@ const App = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const userId = urlParams.get('userId');
 		const userRef = admin.database().ref('users/' + userId)
-		const userSnapshot = userRef.once('value')
+		const userSnapshot = await userRef.once('value')
 		let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
 		// Обновление счета пользователя в Firebase
-		userRef.set({ click_score })
+		await userRef.set({ click_score })
 		
 		
 		setPoints(points + pointsToAdd)
