@@ -40,7 +40,7 @@ const App = () => {
 	
 	const dbRef = ref(database, `users/` + userId +`/click_score`);
 	var start_user_points_score = 0
-	get(dbRef)
+	get (dbRef)
     .then((snapshot) => {
         if (snapshot.exists()) {
             console.log("Данные:", snapshot.val());
@@ -55,7 +55,7 @@ const App = () => {
     });
 
 
-	const [points, setPoints] = useState(start_user_points_score)
+	var [points, setPoints] = useState(start_user_points_score)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
