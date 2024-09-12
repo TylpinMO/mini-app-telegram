@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
-const admin = require('firebase-admin')
+// const admin = require('firebase-admin')
+import admin from 'firebase-admin'
 
 // admin.initializeApp({
 // 	credential: admin.credential.cert(require('../serviceAccountKey.json')),
