@@ -67,30 +67,31 @@ const App = () => {
 	// 	return start_user_points_score;
 	// }
 	// var startNummmm = 3
-	const [points, setPoints] = useState(2)
+	const [pointss, setPointss] = useState (0)
+	useEffect(() => {
+		const getStartNum = async (dbref: DatabaseReference) => {
+			try {
+				const snapshot = await get(dbref);
+				if (snapshot.exists()) {
+					console.log("Данные:", snapshot.val());
+					setPointss(snapshot.val()); // Устанавливаем значение в состояние
+				} else {
+					console.log("Нет данных");
+				}
+			} catch (error) {
+				console.error("Ошибка при получении данных:", error);
+			}
+		};
+		
+		getStartNum(dbRef);
+	}, [dbRef]);
+	
+	const [points, setPoints] = useState (pointss)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
 	)
-	useEffect(() => {
-		const getStartNum = async (dbref: DatabaseReference) => {
-		  try {
-			const snapshot = await get(dbref);
-			if (snapshot.exists()) {
-			  console.log("Данные:", snapshot.val());
-			  setPoints(snapshot.val()); // Устанавливаем значение в состояние
-			} else {
-			  console.log("Нет данных");
-			}
-		  } catch (error) {
-			console.error("Ошибка при получении данных:", error);
-		  }
-		};
-	
-		getStartNum(dbRef);
-	  }, [dbRef]);
-	  
-	  const pointsToAdd = 1
+	const pointsToAdd = 1
 	const energyToReduce = 1
 	
 
