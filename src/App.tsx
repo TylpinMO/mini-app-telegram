@@ -45,6 +45,7 @@ const App = () => {
         if (snapshot.exists()) {
             console.log("Данные:", snapshot.val());
 			start_user_points_score =  snapshot.val()
+            console.log("Данные:", start_user_points_score);
         } else {
             console.log("Нет данных");
         }
@@ -62,7 +63,7 @@ const App = () => {
 	const pointsToAdd = 1
 	const energyToReduce = 1
 
-	const handleClick = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
 		}
