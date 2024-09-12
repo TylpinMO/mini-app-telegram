@@ -210,6 +210,14 @@ const App = () => {
 									<img src={rocket} width={24} height={24} alt='High Voltage' />
 									<span>Soon</span>
 								</button>
+								<div className='container_my_ton_redirect'></div>
+								<button className='connectwallet'>
+									<a href="http://google.com">
+									{/* align-items:center */}
+									<img src={coin} width={24} height={24} alt='High Voltage' />
+									<span>Wallet Connect</span>
+									</a>
+								</button>
 							</div>
 						</div>
 					</div>
