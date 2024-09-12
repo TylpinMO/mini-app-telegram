@@ -3,7 +3,7 @@ import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 // const admin = require('firebase-admin')
-import admin from 'firebase-admin'
+// import admin from 'firebase-admin'
 
 // admin.initializeApp({
 // 	credential: admin.credential.cert(require('../serviceAccountKey.json')),
@@ -21,22 +21,25 @@ const App = () => {
 	const pointsToAdd = 1
 	const energyToReduce = 1
 
-	const handleClick = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
 		}
 		const rect = e.currentTarget.getBoundingClientRect()
 		const x = e.clientX - rect.left
 		const y = e.clientY - rect.top
-
 		
 		const urlParams = new URLSearchParams(window.location.search);
 		const userId = urlParams.get('userId');
-		const userRef = admin.database().ref('users/' + userId)
-		const userSnapshot = await userRef.once('value')
-		let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
-		// Обновление счета пользователя в Firebase
-		await userRef.set({ click_score })
+		console.log('Полученный userID:', userId);
+		
+		// const urlParams = new URLSearchParams(window.location.search);
+		// const userId = urlParams.get('userId');
+		// const userRef = admin.database().ref('users/' + userId)
+		// const userSnapshot = await userRef.once('value')
+		// let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
+		// // Обновление счета пользователя в Firebase
+		// await userRef.set({ click_score })
 		
 		
 		setPoints(points + pointsToAdd)
