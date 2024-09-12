@@ -39,7 +39,7 @@ bot.onText(/\/start/, async msg => {
 
 	bot.sendMessage(
 		chatId,
-		`Добро пожаловать в кликер, @${userUsername} ! click launch app to start`,
+		`Welcome to MickeyMouseToken, @${userUsername} ! Click Launch app to start`,
 		{}
 	)
 	// Обновление счета пользователя в Firebase
