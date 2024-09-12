@@ -67,7 +67,7 @@ const App = () => {
 	// 	return start_user_points_score;
 	// }
 	// var startNummmm = 3
-	const [points, setPoints] = useState(2)
+	const [points, setPoints] = useState(0)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
