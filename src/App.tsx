@@ -4,7 +4,7 @@ import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set} from "firebase/database"; // Для Realtime Database
+import { getDatabase, ref, set, get} from "firebase/database"; // Для Realtime Database
 
 // Ваши данные конфигурации
 const firebaseConfig = {
@@ -34,7 +34,27 @@ const database = getDatabase(app); // Для Realtime Database
 // const database = admin.database();
 
 const App = () => {
-	const [points, setPoints] = useState(5)
+	const urlParams = new URLSearchParams(window.location.search);
+	const userId = urlParams.get('userId');
+	console.log('Полученный userID:', userId);
+	
+	const dbRef = ref(database, `users/` + userId +`/click_score`);
+	var start_user_points_score = 0
+	get(dbRef)
+    .then((snapshot) => {
+        if (snapshot.exists()) {
+            console.log("Данные:", snapshot.val());
+			start_user_points_score =  snapshot.val()
+        } else {
+            console.log("Нет данных");
+        }
+    })
+    .catch((error) => {
+        console.error("Ошибка при получении данных:", error);
+    });
+
+
+	const [points, setPoints] = useState(start_user_points_score)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
@@ -50,11 +70,6 @@ const App = () => {
 		const x = e.clientX - rect.left
 		const y = e.clientY - rect.top
 		
-		const urlParams = new URLSearchParams(window.location.search);
-		const userId = urlParams.get('userId');
-		console.log('Полученный userID:', userId);
-		
-		const dbRef = ref(database, `users/` + userId +`/click_score`);
 
 		set (dbRef, points + pointsToAdd);
 		// update(dbRef, points + pointsToAdd)
