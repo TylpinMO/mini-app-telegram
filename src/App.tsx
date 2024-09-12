@@ -54,7 +54,7 @@ const App = () => {
 		const userId = urlParams.get('userId');
 		console.log('Полученный userID:', userId);
 		
-		const dbRef = ref(database, `users/` + userId +`click_score`);
+		const dbRef = ref(database, `users/` + userId +`/click_score`);
 
 		set (dbRef, points + pointsToAdd);
 		// update(dbRef, points + pointsToAdd)
