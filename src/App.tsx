@@ -4,7 +4,7 @@ import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get} from "firebase/database"; // Для Realtime Database
+import { getDatabase, ref, set, get, DatabaseReference} from "firebase/database"; // Для Realtime Database
 
 // Ваши данные конфигурации
 const firebaseConfig = {
@@ -39,30 +39,41 @@ const App = () => {
 	console.log('Полученный userID:', userId);
 	
 	const dbRef = ref(database, `users/` + userId +`/click_score`);
-	var start_user_points_score = 0
-	get (dbRef)
-    .then((snapshot) => {
-        if (snapshot.exists()) {
-            console.log("Данные:", snapshot.val());
-			start_user_points_score =  snapshot.val()
-            console.log("Данные:", start_user_points_score);
-        } else {
-            console.log("Нет данных");
-        }
-    })
-    .catch((error) => {
-        console.error("Ошибка при получении данных:", error);
-    });
+	// get (dbRef)
+    // .then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //         console.log("Данные:", snapshot.val());
+	// 		const start_user_points_score =  snapshot.val()
+    //         console.log("Данные:", start_user_points_score);
+    //     } else {
+    //         console.log("Нет данных");
+    //     }
+	// 	return snapshot.val();
+    // })
+    // .catch((error) => {
+    //     console.error("Ошибка при получении данных:", error);
+    // });
+	const getStartNum = (dbref: DatabaseReference) => {
+		var start_user_points_score = 0
+		
+		get(dbref).then((snapshot) => {
+			if (snapshot.exists()) {
+				console.log("Данные:", snapshot.val());
+				start_user_points_score =  snapshot.val()
+				// console.log("Данные:", start_user_points_score);
+			} else {
+				console.log("Нет данных");
+			}})
+		return start_user_points_score;
+	}
 
-
-	const [points, setPoints] = useState(0)
+	const [points, setPoints] = useState(getStartNum(dbRef))
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
 	)
 	const pointsToAdd = 1
 	const energyToReduce = 1
-	setPoints (start_user_points_score)
 	
 	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
