@@ -4,7 +4,7 @@ import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, update, set} from "firebase/database"; // Для Realtime Database
+import { getDatabase, ref, set} from "firebase/database"; // Для Realtime Database
 
 // Ваши данные конфигурации
 const firebaseConfig = {
