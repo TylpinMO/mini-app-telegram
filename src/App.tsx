@@ -2,6 +2,27 @@ import { useEffect, useState } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
+
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, update, set} from "firebase/database"; // Для Realtime Database
+
+// Ваши данные конфигурации
+const firebaseConfig = {
+	apiKey: "AIzaSyDk-lykAi48oL0k6tpErToxMcc60_Y1RxQ",
+	authDomain: "botclientmouse.firebaseapp.com",
+	databaseURL: "https://botclientmouse-default-rtdb.europe-west1.firebasedatabase.app",
+	projectId: "botclientmouse",
+	storageBucket: "botclientmouse.appspot.com",
+	messagingSenderId: "5680704965",
+	appId: "1:5680704965:web:afbe05ccb202656a652fac"
+  };
+
+// Инициализация приложения Firebase
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app); // Для Realtime Database
+
+
+
 // const admin = require('firebase-admin')
 // import admin from 'firebase-admin'
 
@@ -21,7 +42,7 @@ const App = () => {
 	const pointsToAdd = 1
 	const energyToReduce = 1
 
-	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleClick = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
 		}
@@ -32,6 +53,20 @@ const App = () => {
 		const urlParams = new URLSearchParams(window.location.search);
 		const userId = urlParams.get('userId');
 		console.log('Полученный userID:', userId);
+		
+		const dbRef = ref(database, `users/${userId}/click_score`);
+
+		set (dbRef, points + pointsToAdd);
+		// update(dbRef, points + pointsToAdd)
+		// 	.then(() => {
+		// 		console.log("Данные успешно обновлены!");
+		// 	})
+		// 	.catch((error) => {
+		// 		console.error("Ошибка обновления данных: ", error);
+		// 	});
+		
+		// Пример вызова функции
+		// updateFieldInRealtimeDB("users/userID123/age", 30);
 		
 		// const urlParams = new URLSearchParams(window.location.search);
 		// const userId = urlParams.get('userId');
