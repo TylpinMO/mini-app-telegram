@@ -28,17 +28,17 @@ const App = () => {
 		const x = e.clientX - rect.left
 		const y = e.clientY - rect.top
 
-		setPoints(points + pointsToAdd)
 		
 		const urlParams = new URLSearchParams(window.location.search);
 		const userId = urlParams.get('userId');
 		const userRef = admin.database().ref('users/' + userId)
-		const userSnapshot = userRef.once('value')
-		let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
-		// Обновление счета пользователя в Firebase
-		userRef.set({ click_score })
-
-
+		// const userSnapshot = userRef.once('value')
+		// let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
+		// // Обновление счета пользователя в Firebase
+		// userRef.set({ click_score })
+		
+		
+		setPoints(points + pointsToAdd)
 		setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce)
 		setClicks([...clicks, { id: Date.now(), x, y }])
 	}
