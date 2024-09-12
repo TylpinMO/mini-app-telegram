@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
-// const admin = require('firebase-admin')
+const admin = require('firebase-admin')
 
 // admin.initializeApp({
 // 	credential: admin.credential.cert(require('../serviceAccountKey.json')),
@@ -30,13 +30,13 @@ const App = () => {
 
 		setPoints(points + pointsToAdd)
 		
-		// const urlParams = new URLSearchParams(window.location.search);
-		// const userId = urlParams.get('userId');
-		// const userRef = admin.database().ref('users/' + userId)
-		// const userSnapshot = userRef.once('value')
-		// let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
-		// // Обновление счета пользователя в Firebase
-		// userRef.set({ click_score })
+		const urlParams = new URLSearchParams(window.location.search);
+		const userId = urlParams.get('userId');
+		const userRef = admin.database().ref('users/' + userId)
+		const userSnapshot = userRef.once('value')
+		let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
+		// Обновление счета пользователя в Firebase
+		userRef.set({ click_score })
 
 
 		setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce)
