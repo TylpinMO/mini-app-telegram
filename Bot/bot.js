@@ -36,10 +36,10 @@ bot.onText(/\/start/, async msg => {
 	const userRef = admin.database().ref('users/' + userId)
 	const userSnapshot = await userRef.once('value')
 	let click_score = userSnapshot.exists() ? userSnapshot.val().click_score : 0
-
+	const webAppUserUrl =  `https://telebot-eosin.vercel.app/?userId=${userId}`
 	bot.sendMessage(
 		chatId,
-		`Welcome to MickeyMouseToken, @${userUsername} ! Click Launch app to start`,
+		`Welcome to MickeyMouseToken, @${userUsername} ! goto: ${webAppUserUrl}`,
 		{}
 	)
 	// Обновление счета пользователя в Firebase
