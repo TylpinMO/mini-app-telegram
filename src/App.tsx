@@ -34,7 +34,7 @@ const database = getDatabase(app); // Для Realtime Database
 // const database = admin.database();
 
 const App = () => {
-	const [points, setPoints] = useState(0)
+	const [points, setPoints] = useState(5)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
