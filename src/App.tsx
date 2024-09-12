@@ -55,14 +55,15 @@ const App = () => {
     });
 
 
-	var [points, setPoints] = useState(start_user_points_score)
+	const [points, setPoints] = useState(0)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
 	)
 	const pointsToAdd = 1
 	const energyToReduce = 1
-
+	setPoints (start_user_points_score)
+	
 	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
 			return
