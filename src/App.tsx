@@ -176,7 +176,7 @@ const App = () => {
 		  const button = document.getElementById('redirectButton');
 		  if (button) {
 			button.addEventListener('click', () => {
-			  redirectTo('https://google.com'); // Change '/another-page' to your desired URL
+			  redirectTo('/another-page'); // Change '/another-page' to your desired URL
 			});
 		  }
 		};
