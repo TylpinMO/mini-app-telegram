@@ -17,19 +17,15 @@ const MenuButtonType = 'web_app'
 const MenuButtonText = 'Launch our App'
 
 bot.start(async ctx => {
-	// const chatId = ctx.chat.id;
 	const userId = ctx.from.id.toString()
-	// const userName = ctx.from.first_name;
 	const userUsername = ctx.from.username
 
-	// Fetch user data from Firebase
 	const userRef = admin.database().ref(`users/${userId}`)
 	const userSnapshot = await userRef.once('value')
 	const val = userSnapshot.val()
 	let click_score = userSnapshot.exists() ? val.click_score : 0
 	let energy_val = userSnapshot.exists() ? val.energy_val : 500
 
-	// Generating the web app URL
 	const webAppUserUrl = `${web_link}?userId=${userId}`
 
 	await ctx.setChatMenuButton({
@@ -38,16 +34,13 @@ bot.start(async ctx => {
 		web_app: { url: webAppUserUrl },
 	})
 
-	// Send a welcome message
 	await ctx.reply(
 		`Welcome to MickeyMouseToken, @${userUsername}! Go to: ${webAppUserUrl}`
 	)
 
-	// Update user's score in Firebase
 	await userRef.set({ click_score, energy_val })
 })
 
-// Launch the bot
 bot
 	.launch()
 	.then(() => {
@@ -57,7 +50,6 @@ bot
 		console.error('Error launching the bot:', err)
 	})
 
-// Handle graceful shutdown
 process.once('SIGINT', () => {
 	bot.stop('SIGINT')
 })
