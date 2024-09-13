@@ -12,20 +12,27 @@
 	<body>
 		<script>
 			const backButton = Telegram.WebApp.BackButton;
-		
-			if (window.location.search) {
-			
-			backButton.show();
-			
-			} else {
-			
-			backButton.hide(); 
-			
+		  
+			// Function to manage back button visibility
+			function manageBackButton() {
+			  // Check if the current URL has search parameters and is not the home page
+			  if (window.location.search && window.location.pathname !== '/') {
+				backButton.show();
+			  } else {
+				backButton.hide();
+			  }
 			}
+		  
+			// Initial check when the script loads
+			manageBackButton();
+		  
+			// Event listener for popstate to manage back button visibility when navigating back
+			window.addEventListener('popstate', manageBackButton);
+		  
+			// Back button click event
 			backButton.onClick(() => {
-				history.back();
-				});
-		
+			  history.back();
+			});
 		  </script>
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
