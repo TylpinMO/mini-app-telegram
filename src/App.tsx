@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket } from './images'
@@ -25,10 +25,26 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const database = getDatabase(app)
-
+interface TelegramWebApp {
+	BackButton: {
+	  show: () => void;
+	  hide: () => void;
+	  onClick: (callback: () => void) => void;
+	};
+	// Add other methods or properties if needed
+  }
+  
+  declare global {
+	interface Window {
+	  Telegram: {
+		WebApp: TelegramWebApp;
+	  };
+	}
+  }
 const App = () => {
 	const urlParams = new URLSearchParams(window.location.search)
 	const userId = urlParams.get('userId')
+	console.log('Полученный userID:', userId)
 
 	const dbRefToPoints = ref(database, `users/` + userId + `/click_score`)
 	const dbRefToEnergy = ref(database, `users/` + userId + `/energy_val`)
@@ -44,7 +60,7 @@ const App = () => {
 				const snapshot = await get(dbRefToPoints)
 				if (snapshot.exists()) {
 					console.log('Данные:', snapshot.val())
-					setPoints(snapshot.val())
+					setPoints(snapshot.val()) // Устанавливаем значение в состояние
 				} else {
 					console.log('Нет данных')
 				}
@@ -62,7 +78,7 @@ const App = () => {
 				const snapshot = await get(dbRefToEnergy)
 				if (snapshot.exists()) {
 					console.log('Данные:', snapshot.val())
-					setEnergy(snapshot.val()) 
+					setEnergy(snapshot.val()) // Устанавливаем значение в состояние
 				} else {
 					console.log('Нет данных')
 				}
@@ -100,19 +116,77 @@ const App = () => {
 		setClicks(prevClicks => prevClicks.filter(click => click.id !== id))
 	}
 
+	// useEffect hook to restore energy over time
 	useEffect(() => {
 		const interval = setInterval(async () => {
 			setEnergy(prevEnergy => {
 				const newEnergy = Math.min(prevEnergy + 1, 500)
+				// Set new energy to Firebase
 				set(dbRefToEnergy, newEnergy).catch(error =>
 					console.error('Ошибка при обновлении энергии:', error)
 				)
 				return newEnergy
 			})
-		}, 3000) 
+		}, 3000) // Restore 10 energy points every second
 
-		return () => clearInterval(interval)
+		return () => clearInterval(interval) // Clear interval on component unmount
 	}, [])
+
+	const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    // Dynamically load the Telegram Web App script
+    const telegramScript = document.createElement('script');
+    telegramScript.src = "https://telegram.org/js/telegram-web-app.js";
+    telegramScript.async = true;
+    document.body.appendChild(telegramScript);
+
+    const backButton = window.Telegram?.WebApp?.BackButton;
+
+    const manageBackButton = () => {
+      if (backButton) {
+        if (window.location.search && window.location.pathname !== '/') {
+          backButton.show();
+        } else {
+          backButton.hide();
+        }
+      }
+    };
+
+    telegramScript.onload = () => {
+      manageBackButton();
+      window.addEventListener('popstate', manageBackButton);
+
+      const redirectTo = (url: string) => {
+        history.pushState(null, '', url);
+        manageBackButton();
+      };
+
+      backButton?.onClick(() => {
+        history.back();
+      });
+
+      // Assign the button ref and add click listener
+      if (buttonRef.current) {
+        const button = buttonRef.current;
+        const clickHandler = () => {
+          redirectTo('/another-page'); // Change '/another-page' to your desired URL
+          button.removeEventListener('click', clickHandler); // Remove listener after first click
+        };
+
+        button.addEventListener('click', clickHandler);
+      }
+    };
+
+    // Cleanup the script and remove listener on component unmount
+    return () => {
+      document.body.removeChild(telegramScript);
+      window.removeEventListener('popstate', manageBackButton);
+      if (buttonRef.current) {
+        buttonRef.current.removeEventListener('click', () => {}); // Clean up click handler if necessary
+      }
+    };
+  }, []);
 
 	return (
 		<div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
@@ -159,7 +233,7 @@ const App = () => {
 						<div className='flex-grow flex items-center max-w-60 text-sm'>
 							<div className='w-full bg-[#fad258] py-4 rounded-2xl flex justify-around'>
 								<a href='http://b99640gz.beget.tech/'>
-									<button className='flex flex-col items-center gap-1'>
+									<button id="redirectButton" className='flex flex-col items-center gap-1'>
 										<img src={bear} width={24} height={24} alt='High Voltage' />
 										<span>Games</span>
 									</button>
