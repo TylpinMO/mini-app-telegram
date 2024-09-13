@@ -29,10 +29,26 @@
 			// Event listener for popstate to manage back button visibility when navigating back
 			window.addEventListener('popstate', manageBackButton);
 		  
+			// Function to handle redirection while managing back button visibility
+			function redirectTo(url) {
+			  // Update the browser's history
+			  history.pushState(null, '', url);
+			  // Redirect to the new URL
+			  window.location.href = url;
+			  // Show the back button after redirection
+			  manageBackButton();
+			}
+		  
 			// Back button click event
 			backButton.onClick(() => {
 			  history.back();
 			});
+		  
+			// Example usage: Assume you have a button with id "redirectButton"
+			document.getElementById('redirectButton').addEventListener('click', function() {
+			  redirectTo('/another-page'); // Change '/another-page' to your desired URL
+			});
+		  
 		  </script>
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
