@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Lucky Box</title>
+
+		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				height: 100vh;
+				margin: 0;
+				/* background-color: #f0f0f0; */
+				font-family: Arial, sans-serif;
+				background-image: linear-gradient(
+					90deg,
+					rgb(27, 27, 138),
+					rgb(69, 180, 172),
+					rgb(40, 191, 225)
+				);
+				/* background: radial-gradient(white, blue); */
+			}
+			h1 {
+				margin-bottom: 20px;
+				color: #f8dddd;
+			}
+			.box {
+				width: 200px;
+				height: 200px;
+				background: url(../src/images/3d_yellow_gift_box.png) no-repeat center;
+				background-size: cover;
+				margin-bottom: 20px;
+				/* border: 2px solid #666;
+            border-radius: 10px; */
+				transition: transform 0.5s;
+				/* box-shadow: 0 4px 10px rgba(0,0,0,0.2); */
+			}
+			.shake {
+				animation: shake 0.5s;
+			}
+			@keyframes shake {
+				0% {
+					transform: translate(0);
+				}
+				25% {
+					transform: translate(-5px);
+				}
+				50% {
+					transform: translate(5px);
+				}
+				75% {
+					transform: translate(-5px);
+				}
+				100% {
+					transform: translate(0);
+				}
+			}
+			button {
+				padding: 10px 20px;
+				margin: 5px;
+				border: none;
+				border-radius: 5px;
+				background-color: #05beec;
+				color: rgb(255, 255, 255);
+				font-size: 16px;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+			button:hover {
+				background-color: #05beec;
+			}
+			#result {
+				display: none;
+				margin-top: 20px;
+				padding: 20px;
+				background-color: rgb(96, 151, 235);
+				border-radius: 10px;
+				box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+				text-align: center;
+			}
+			h2 {
+				color: white;
+			}
+			/* .bg-color-gradient{
+            min-height: 100vh;
+            width: 100%;
+
+            background-image: linear-gradient(0deg, black, blue);
+        } */
+		</style>
+		<!-- <div class="bg-color-gradient"></div> -->
+	</head>
+	<body>
+		<h1>Lucky Box</h1>
+		<h2 style="font-size: 13px">STON.fi ✖ The Open League</h2>
+		<div class="box" id="luckBox"></div>
+		<button id="openButton">Open</button>
+		<ul id="prizesList" style="display: none; text-align: left; color: white">
+			<li>0.5 TON + 5.000 MOS</li>
+			<li>5.000 MOS</li>
+			<li>10.000 MOS</li>
+			<li>100.000 MOS</li>
+			<li>Nothing</li>
+		</ul>
+		<div id="result">
+			<h2 id="prizeName"></h2>
+			<!-- Добавление ссылки тут -->
+			<form action="https://vk.com">
+				<button id="withdrawButton">Withdraw</button>
+			</form>
+		</div>
+
+		<script>
+			const prizes = [
+				{ name: '0.5 TON + 5.000 MOS', probability: 1 },
+				{ name: '5.000 MOS', probability: 0 },
+				{ name: '10.000 MOS', probability: 0 },
+				{ name: '100.000 MOS', probability: 0 },
+				{ name: 'Nothing(', probability: 0 },
+			]
+
+			document.getElementById('prizesList').style.display = 'block'
+			document.getElementById('openButton').addEventListener('click', () => {
+				const box = document.getElementById('luckBox')
+				box.classList.add('shake')
+				setTimeout(() => {
+					box.classList.remove('shake')
+					const prize = getPrize()
+					document.getElementById(
+						'prizeName'
+					).textContent = `You won: ${prize.name}`
+					document.getElementById('result').style.display = 'block'
+				}, 500)
+			})
+
+			function getPrize() {
+				const random = Math.random()
+				let cumulativeProbability = 0
+				for (const prize of prizes) {
+					cumulativeProbability += prize.probability
+					if (random < cumulativeProbability) {
+						return prize
+					}
+				}
+			}
+		</script>
+	</body>
+</html>
