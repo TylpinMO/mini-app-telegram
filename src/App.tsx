@@ -29,7 +29,6 @@ const database = getDatabase(app)
 const App = () => {
 	const urlParams = new URLSearchParams(window.location.search)
 	const userId = urlParams.get('userId')
-	console.log('Полученный userID:', userId)
 
 	const dbRefToPoints = ref(database, `users/` + userId + `/click_score`)
 	const dbRefToEnergy = ref(database, `users/` + userId + `/energy_val`)
@@ -45,7 +44,7 @@ const App = () => {
 				const snapshot = await get(dbRefToPoints)
 				if (snapshot.exists()) {
 					console.log('Данные:', snapshot.val())
-					setPoints(snapshot.val()) // Устанавливаем значение в состояние
+					setPoints(snapshot.val())
 				} else {
 					console.log('Нет данных')
 				}
@@ -63,7 +62,7 @@ const App = () => {
 				const snapshot = await get(dbRefToEnergy)
 				if (snapshot.exists()) {
 					console.log('Данные:', snapshot.val())
-					setEnergy(snapshot.val()) // Устанавливаем значение в состояние
+					setEnergy(snapshot.val()) 
 				} else {
 					console.log('Нет данных')
 				}
