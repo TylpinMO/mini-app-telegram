@@ -2,7 +2,7 @@
 	"name": "mickey-mousetoken",
 	"private": true,
 	"version": "0.0.0",
-	"module": "type",
+	"type": "module",
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build",
