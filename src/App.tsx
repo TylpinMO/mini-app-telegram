@@ -133,9 +133,7 @@ const App = () => {
 					</div>
 					<div className='text-base mt-2 flex items-center'>
 						<img src={trophy} width={24} height={24} />
-						<span className='ml-1'>
-							Bronze <Arrow size={18} className='ml-0 mb-1 inline-block' />
-						</span>
+						<span className='ml-1'>STON.fi ✖ The Open League</span>
 					</div>
 				</div>
 
@@ -172,15 +170,6 @@ const App = () => {
 									<img src={rocket} width={24} height={24} alt='High Voltage' />
 									<span>Soon</span>
 								</button>
-								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
-								<a href='http://google.com'>
-									<button className='flex flex-col items-center gap-1'>
-										{/* <center>	 */}
-										<img src={coin} width={24} height={24} alt='High Voltage' />
-										<span>Wallet</span>
-										{/* </center> */}
-									</button>
-								</a>
 							</div>
 						</div>
 					</div>
