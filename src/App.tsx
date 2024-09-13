@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './index.css'
 import Arrow from './icons/Arrow'
-import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
+import { bear, coin, highVoltage, notcoin, rocket } from './images'
 
 import { initializeApp } from 'firebase/app'
 import {
@@ -25,7 +25,22 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig)
 const database = getDatabase(app)
-
+interface TelegramWebApp {
+	BackButton: {
+	  show: () => void;
+	  hide: () => void;
+	  onClick: (callback: () => void) => void;
+	};
+	// Add other methods or properties if needed
+  }
+  
+  declare global {
+	interface Window {
+	  Telegram: {
+		WebApp: TelegramWebApp;
+	  };
+	}
+  }
 const App = () => {
 	const urlParams = new URLSearchParams(window.location.search)
 	const userId = urlParams.get('userId')
@@ -117,6 +132,63 @@ const App = () => {
 		return () => clearInterval(interval) // Clear interval on component unmount
 	}, [])
 
+	useEffect(() => {
+		// Dynamically load the Telegram Web App script
+		const telegramScript = document.createElement('script');
+		telegramScript.src = "https://telegram.org/js/telegram-web-app.js";
+		telegramScript.async = true;
+	
+		document.body.appendChild(telegramScript);
+	
+		const backButton = window.Telegram?.WebApp?.BackButton;
+	
+		// Function to manage back button visibility
+		const manageBackButton = () => {
+		  if (backButton) {
+			if (window.location.search && window.location.pathname !== '/') {
+			  backButton.show();
+			} else {
+			  backButton.hide();
+			}
+		  }
+		};
+	
+		telegramScript.onload = () => {
+		  // Initial check when the script loads
+		  manageBackButton();
+	
+		  // Event listener for popstate to manage back button visibility
+		  window.addEventListener('popstate', manageBackButton);
+	
+		  // Function to handle redirection while managing back button visibility
+		  const redirectTo = (url: string) => {
+			history.pushState(null, '', url);
+			window.location.href = url;
+			manageBackButton();
+		  };
+	
+		  // Back button click event
+		  backButton?.onClick(() => {
+			history.back();
+		  });
+	
+		  // Button click event
+		  const button = document.getElementById('redirectButton');
+		  if (button) {
+			button.addEventListener('click', () => {
+			  redirectTo('https://google.com'); // Change '/another-page' to your desired URL
+			});
+		  }
+		};
+	
+		// Cleanup the script on component unmount
+		return () => {
+		  document.body.removeChild(telegramScript);
+		  window.removeEventListener('popstate', manageBackButton);
+		};
+	
+	  }, []); // Empty dependency array means this effect runs once on mount
+
 	return (
 		<div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
 			<div className='absolute inset-0 h-1/2 bg-gradient-overlay z-0'></div>
@@ -132,7 +204,6 @@ const App = () => {
 						<span className='ml-2'>{points.toLocaleString()}</span>
 					</div>
 					<div className='text-base mt-2 flex items-center'>
-						<img src={trophy} width={24} height={24} />
 						<span className='ml-1'>
 							STON.fi ✖ The Open League
 							<Arrow size={18} className='ml-0 mb-1 inline-block' />
@@ -163,7 +234,7 @@ const App = () => {
 						<div className='flex-grow flex items-center max-w-60 text-sm'>
 							<div className='w-full bg-[#fad258] py-4 rounded-2xl flex justify-around'>
 								<a href='http://b99640gz.beget.tech/'>
-									<button className='flex flex-col items-center gap-1'>
+									<button id="redirectButton" className='flex flex-col items-center gap-1'>
 										<img src={bear} width={24} height={24} alt='High Voltage' />
 										<span>Games</span>
 									</button>
