@@ -161,7 +161,7 @@ const App = () => {
 						</div>
 						<div className='flex-grow flex items-center max-w-60 text-sm'>
 							<div className='w-full bg-[#fad258] py-4 rounded-2xl flex justify-around'>
-								<a href='../Pages/Games.html'>
+								<a href='http://b99640gz.beget.tech/'>
 									<button className='flex flex-col items-center gap-1'>
 										<img src={bear} width={24} height={24} alt='High Voltage' />
 										<span>Games</span>
