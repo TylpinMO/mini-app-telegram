@@ -3,29 +3,36 @@ import './index.css'
 import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get, DatabaseReference} from "firebase/database";
+import { initializeApp } from 'firebase/app'
+import {
+	getDatabase,
+	ref,
+	set,
+	get,
+	DatabaseReference,
+} from 'firebase/database'
 
 const firebaseConfig = {
-	apiKey: "AIzaSyDk-lykAi48oL0k6tpErToxMcc60_Y1RxQ",
-	authDomain: "botclientmouse.firebaseapp.com",
-	databaseURL: "https://botclientmouse-default-rtdb.europe-west1.firebasedatabase.app",
-	projectId: "botclientmouse",
-	storageBucket: "botclientmouse.appspot.com",
-	messagingSenderId: "5680704965",
-	appId: "1:5680704965:web:afbe05ccb202656a652fac"
-  };
+	apiKey: 'AIzaSyDk-lykAi48oL0k6tpErToxMcc60_Y1RxQ',
+	authDomain: 'botclientmouse.firebaseapp.com',
+	databaseURL:
+		'https://botclientmouse-default-rtdb.europe-west1.firebasedatabase.app',
+	projectId: 'botclientmouse',
+	storageBucket: 'botclientmouse.appspot.com',
+	messagingSenderId: '5680704965',
+	appId: '1:5680704965:web:afbe05ccb202656a652fac',
+}
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const app = initializeApp(firebaseConfig)
+const database = getDatabase(app)
 
 const App = () => {
-	const urlParams = new URLSearchParams(window.location.search);
-	const userId = urlParams.get('userId');
-	console.log('Полученный userID:', userId);
-	
-	const dbRefToPoints = ref(database, `users/` + userId +`/click_score`);
-	const dbRefToEnergy = ref(database, `users/` + userId +`/energy_val`);
+	const urlParams = new URLSearchParams(window.location.search)
+	const userId = urlParams.get('userId')
+	console.log('Полученный userID:', userId)
+
+	const dbRefToPoints = ref(database, `users/` + userId + `/click_score`)
+	const dbRefToEnergy = ref(database, `users/` + userId + `/energy_val`)
 
 	const [points, setPoints] = useState(0)
 	const [energy, setEnergy] = useState(500)
@@ -34,43 +41,42 @@ const App = () => {
 	)
 	useEffect(() => {
 		const getStartPointsNum = async (dbRefToPoints: DatabaseReference) => {
-		  try {
-			const snapshot = await get(dbRefToPoints);
-			if (snapshot.exists()) {
-			  console.log("Данные:", snapshot.val());
-			  setPoints(snapshot.val()); // Устанавливаем значение в состояние
-			} else {
-			  console.log("Нет данных");
+			try {
+				const snapshot = await get(dbRefToPoints)
+				if (snapshot.exists()) {
+					console.log('Данные:', snapshot.val())
+					setPoints(snapshot.val()) // Устанавливаем значение в состояние
+				} else {
+					console.log('Нет данных')
+				}
+			} catch (error) {
+				console.error('Ошибка при получении данных:', error)
 			}
-		  } catch (error) {
-			console.error("Ошибка при получении данных:", error);
-		  }
-		};
-	
-		getStartPointsNum(dbRefToPoints);
-	}, [dbRefToPoints]);
+		}
+
+		getStartPointsNum(dbRefToPoints)
+	}, [dbRefToPoints])
 
 	useEffect(() => {
 		const getStartEnergyNum = async (dbRefToEnergy: DatabaseReference) => {
-		  try {
-			const snapshot = await get(dbRefToEnergy);
-			if (snapshot.exists()) {
-			  console.log("Данные:", snapshot.val());
-			  setEnergy(snapshot.val()); // Устанавливаем значение в состояние
-			} else {
-			  console.log("Нет данных");
+			try {
+				const snapshot = await get(dbRefToEnergy)
+				if (snapshot.exists()) {
+					console.log('Данные:', snapshot.val())
+					setEnergy(snapshot.val()) // Устанавливаем значение в состояние
+				} else {
+					console.log('Нет данных')
+				}
+			} catch (error) {
+				console.error('Ошибка при получении данных:', error)
 			}
-		  } catch (error) {
-			console.error("Ошибка при получении данных:", error);
-		  }
-		};
-	
-		getStartEnergyNum(dbRefToEnergy);
-	}, [dbRefToEnergy]);
-	  
+		}
+
+		getStartEnergyNum(dbRefToEnergy)
+	}, [dbRefToEnergy])
+
 	const pointsToAdd = 1
 	const energyToReduce = 1
-	
 
 	const handleClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (energy - energyToReduce < 0) {
@@ -79,11 +85,13 @@ const App = () => {
 		const rect = e.currentTarget.getBoundingClientRect()
 		const x = e.clientX - rect.left
 		const y = e.clientY - rect.top
-		
 
-		set (dbRefToPoints, points + pointsToAdd);
-		set (dbRefToEnergy, energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
-		
+		set(dbRefToPoints, points + pointsToAdd)
+		set(
+			dbRefToEnergy,
+			energy - energyToReduce < 0 ? 0 : energy - energyToReduce
+		)
+
 		setPoints(points + pointsToAdd)
 		setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce)
 		setClicks([...clicks, { id: Date.now(), x, y }])
@@ -97,12 +105,14 @@ const App = () => {
 	useEffect(() => {
 		const interval = setInterval(async () => {
 			setEnergy(prevEnergy => {
-			  const newEnergy = Math.min(prevEnergy + 1, 500);
-			  // Set new energy to Firebase
-			  set(dbRefToEnergy, newEnergy).catch(error => console.error("Ошибка при обновлении энергии:", error));
-			  return newEnergy;
-			});
-		  }, 3000) // Restore 10 energy points every second
+				const newEnergy = Math.min(prevEnergy + 1, 500)
+				// Set new energy to Firebase
+				set(dbRefToEnergy, newEnergy).catch(error =>
+					console.error('Ошибка при обновлении энергии:', error)
+				)
+				return newEnergy
+			})
+		}, 3000) // Restore 10 energy points every second
 
 		return () => clearInterval(interval) // Clear interval on component unmount
 	}, [])
@@ -151,23 +161,23 @@ const App = () => {
 						</div>
 						<div className='flex-grow flex items-center max-w-60 text-sm'>
 							<div className='w-full bg-[#fad258] py-4 rounded-2xl flex justify-around'>
-								<a href="http://google.com">
+								<a href='http://b99640gz.beget.tech/'>
 									<button className='flex flex-col items-center gap-1'>
 										<img src={bear} width={24} height={24} alt='High Voltage' />
 										<span>Games</span>
 									</button>
 								</a>
-							<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
+								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
 								<button className='flex flex-col items-center gap-1'>
 									<img src={rocket} width={24} height={24} alt='High Voltage' />
 									<span>Soon</span>
 								</button>
-							<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
-								<a href="http://google.com">
+								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
+								<a href='http://google.com'>
 									<button className='flex flex-col items-center gap-1'>
 										{/* <center>	 */}
-											<img src={coin} width={24} height={24} alt='High Voltage' />
-											<span>Wallet</span>
+										<img src={coin} width={24} height={24} alt='High Voltage' />
+										<span>Wallet</span>
 										{/* </center> */}
 									</button>
 								</a>
@@ -204,7 +214,6 @@ const App = () => {
 			</div>
 		</div>
 	)
-	
 }
 
 export default App
