@@ -173,14 +173,6 @@ const App = () => {
 									<span>Soon</span>
 								</button>
 								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
-								<a href='http://google.com'>
-									<button className='flex flex-col items-center gap-1'>
-										{/* <center>	 */}
-										<img src={coin} width={24} height={24} alt='High Voltage' />
-										<span>Wallet</span>
-										{/* </center> */}
-									</button>
-								</a>
 							</div>
 						</div>
 					</div>
