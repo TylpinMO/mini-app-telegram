@@ -11,6 +11,7 @@
 	</head>
 	<body>
 		<script>
+			<button id="redirectButton">Go to Another Page</button>
 			const backButton = Telegram.WebApp.BackButton;
 		  
 			// Function to manage back button visibility
@@ -43,10 +44,10 @@
 			backButton.onClick(() => {
 			  history.back();
 			});
-		  
+
 			// Example usage: Assume you have a button with id "redirectButton"
 			document.getElementById('redirectButton').addEventListener('click', function() {
-			  redirectTo('/another-page'); // Change '/another-page' to your desired URL
+			  	redirectTo('https://google.com'); // Change '/another-page' to your desired URL
 			});
 		  
 		  </script>
