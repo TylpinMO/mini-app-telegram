@@ -24,8 +24,9 @@ bot.start(async (ctx) => {
   // Fetch user data from Firebase
   const userRef = admin.database().ref(`users/${userId}`);
   const userSnapshot = await userRef.once('value');
-  let click_score = userSnapshot.exists() ? userSnapshot.val().click_score : 0;
-  let energy_val  = userSnapshot.exists() ? userSnapshot.val().energy_val : 500;
+  const val = userSnapshot.val()
+  let click_score = userSnapshot.exists() ? val.click_score : 0;
+  let energy_val  = userSnapshot.exists() ? val.energy_val : 500;
 
   // Generating the web app URL
   const webAppUserUrl = `${web_link}?userId=${userId}`;
@@ -40,8 +41,7 @@ bot.start(async (ctx) => {
   await ctx.reply(`Welcome to MickeyMouseToken, @${userUsername}! Go to: ${webAppUserUrl}`);
 
   // Update user's score in Firebase
-  await userRef.set({ click_score });
-  await userRef.set({ energy_val });
+  await userRef.set({ click_score, energy_val });
 });
 
 // Launch the bot
