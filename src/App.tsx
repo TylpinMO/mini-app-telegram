@@ -4,9 +4,8 @@ import Arrow from './icons/Arrow'
 import { bear, coin, highVoltage, notcoin, rocket, trophy } from './images'
 
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, get, DatabaseReference} from "firebase/database"; // Для Realtime Database
+import { getDatabase, ref, set, get, DatabaseReference} from "firebase/database";
 
-// Ваши данные конфигурации
 const firebaseConfig = {
 	apiKey: "AIzaSyDk-lykAi48oL0k6tpErToxMcc60_Y1RxQ",
 	authDomain: "botclientmouse.firebaseapp.com",
@@ -17,65 +16,26 @@ const firebaseConfig = {
 	appId: "1:5680704965:web:afbe05ccb202656a652fac"
   };
 
-// Инициализация приложения Firebase
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app); // Для Realtime Database
-
-
-
-// const admin = require('firebase-admin')
-// import admin from 'firebase-admin'
-
-// admin.initializeApp({
-// 	credential: admin.credential.cert(require('../serviceAccountKey.json')),
-// 	databaseURL:
-// 		'https://botclientmouse-default-rtdb.europe-west1.firebasedatabase.app/', // Например: https://your-project-id.firebaseio.com
-// })
-// const database = admin.database();
+const database = getDatabase(app);
 
 const App = () => {
 	const urlParams = new URLSearchParams(window.location.search);
 	const userId = urlParams.get('userId');
 	console.log('Полученный userID:', userId);
 	
-	const dbRef = ref(database, `users/` + userId +`/click_score`);
-	// get (dbRef)
-    // .then((snapshot) => {
-    //     if (snapshot.exists()) {
-    //         console.log("Данные:", snapshot.val());
-	// 		const start_user_points_score =  snapshot.val()
-    //         console.log("Данные:", start_user_points_score);
-    //     } else {
-    //         console.log("Нет данных");
-    //     }
-	// 	return snapshot.val();
-    // })
-    // .catch((error) => {
-    //     console.error("Ошибка при получении данных:", error);
-    // });
-	// const getStartNum = (dbref: DatabaseReference) => {
-	// 	var start_user_points_score = 0
-		
-	// 	get(dbref).then((snapshot) => {
-	// 		if (snapshot.exists()) {
-	// 			console.log("Данные:", snapshot.val());
-	// 			start_user_points_score =  snapshot.val()
-	// 			// console.log("Данные:", start_user_points_score);
-	// 		} else {
-	// 			console.log("Нет данных");
-	// 		}})
-	// 	return start_user_points_score;
-	// }
-	// var startNummmm = 3
+	const dbRefToPoints = ref(database, `users/` + userId +`/click_score`);
+	const dbRefToEnergy = ref(database, `users/` + userId +`/energy_val`);
+
 	const [points, setPoints] = useState(0)
 	const [energy, setEnergy] = useState(500)
 	const [clicks, setClicks] = useState<{ id: number; x: number; y: number }[]>(
 		[]
 	)
 	useEffect(() => {
-		const getStartNum = async (dbref: DatabaseReference) => {
+		const getStartPointsNum = async (dbRefToPoints: DatabaseReference) => {
 		  try {
-			const snapshot = await get(dbref);
+			const snapshot = await get(dbRefToPoints);
 			if (snapshot.exists()) {
 			  console.log("Данные:", snapshot.val());
 			  setPoints(snapshot.val()); // Устанавливаем значение в состояние
@@ -87,10 +47,28 @@ const App = () => {
 		  }
 		};
 	
-		getStartNum(dbRef);
-	  }, [dbRef]);
+		getStartPointsNum(dbRefToPoints);
+	}, [dbRefToPoints]);
+
+	useEffect(() => {
+		const getStartEnergyNum = async (dbRefToEnergy: DatabaseReference) => {
+		  try {
+			const snapshot = await get(dbRefToEnergy);
+			if (snapshot.exists()) {
+			  console.log("Данные:", snapshot.val());
+			  setEnergy(snapshot.val()); // Устанавливаем значение в состояние
+			} else {
+			  console.log("Нет данных");
+			}
+		  } catch (error) {
+			console.error("Ошибка при получении данных:", error);
+		  }
+		};
+	
+		getStartEnergyNum(dbRefToEnergy);
+	}, [dbRefToEnergy]);
 	  
-	  const pointsToAdd = 1
+	const pointsToAdd = 1
 	const energyToReduce = 1
 	
 
@@ -103,26 +81,8 @@ const App = () => {
 		const y = e.clientY - rect.top
 		
 
-		set (dbRef, points + pointsToAdd);
-		// update(dbRef, points + pointsToAdd)
-		// 	.then(() => {
-		// 		console.log("Данные успешно обновлены!");
-		// 	})
-		// 	.catch((error) => {
-		// 		console.error("Ошибка обновления данных: ", error);
-		// 	});
-		
-		// Пример вызова функции
-		// updateFieldInRealtimeDB("users/userID123/age", 30);
-		
-		// const urlParams = new URLSearchParams(window.location.search);
-		// const userId = urlParams.get('userId');
-		// const userRef = admin.database().ref('users/' + userId)
-		// const userSnapshot = await userRef.once('value')
-		// let click_score = userSnapshot.exists() ? userSnapshot.val().click_score + pointsToAdd : 0
-		// // Обновление счета пользователя в Firebase
-		// await userRef.set({ click_score })
-		
+		set (dbRefToPoints, points + pointsToAdd);
+		set (dbRefToEnergy, energy - energyToReduce < 0 ? 0 : energy - energyToReduce);
 		
 		setPoints(points + pointsToAdd)
 		setEnergy(energy - energyToReduce < 0 ? 0 : energy - energyToReduce)
@@ -135,22 +95,17 @@ const App = () => {
 
 	// useEffect hook to restore energy over time
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setEnergy(prevEnergy => Math.min(prevEnergy + 1, 500))
-		}, 3000) // Restore 10 energy points every second
+		const interval = setInterval(async () => {
+			setEnergy(prevEnergy => {
+			  const newEnergy = Math.min(prevEnergy + 1, 500);
+			  // Set new energy to Firebase
+			  set(dbRefToEnergy, newEnergy).catch(error => console.error("Ошибка при обновлении энергии:", error));
+			  return newEnergy;
+			});
+		  }, 3000) // Restore 10 energy points every second
 
 		return () => clearInterval(interval) // Clear interval on component unmount
 	}, [])
-
-	// const saveData = (val: points) {
-	// 	database.ref('path/to/data').set(points)
-	// 		.then(() => {
-	// 			console.log('Данные успешно сохранены.');
-	// 		})
-	// 		.catch((error) => {
-	// 			console.error('Ошибка при сохранении данных:', error);
-	// 		});
-	// }
 
 	return (
 		<div className='bg-gradient-main min-h-screen px-4 flex flex-col items-center text-white font-medium'>
@@ -196,28 +151,26 @@ const App = () => {
 						</div>
 						<div className='flex-grow flex items-center max-w-60 text-sm'>
 							<div className='w-full bg-[#fad258] py-4 rounded-2xl flex justify-around'>
-								<button className='flex flex-col items-center gap-1'>
-									<img src={bear} width={24} height={24} alt='High Voltage' />
-									<span>Games</span>
-								</button>
-								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
-								<button className='flex flex-col items-center gap-1'>
-									<img src={coin} width={24} height={24} alt='High Voltage' />
-									<span>AirDrop</span>
-								</button>
-								<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
+								<a href="http://google.com">
+									<button className='flex flex-col items-center gap-1'>
+										<img src={bear} width={24} height={24} alt='High Voltage' />
+										<span>Games</span>
+									</button>
+								</a>
+							<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
 								<button className='flex flex-col items-center gap-1'>
 									<img src={rocket} width={24} height={24} alt='High Voltage' />
 									<span>Soon</span>
 								</button>
-								<div className='container_my_ton_redirect'></div>
-								<button className='connectwallet'>
-									<a href="http://google.com">
-									{/* align-items:center */}
-									<img src={coin} width={24} height={24} alt='High Voltage' />
-									<span>Wallet Connect</span>
-									</a>
-								</button>
+							<div className='h-[48px] w-[2px] bg-[#fddb6d]'></div>
+								<a href="http://google.com">
+									<button className='flex flex-col items-center gap-1'>
+										{/* <center>	 */}
+											<img src={coin} width={24} height={24} alt='High Voltage' />
+											<span>Wallet</span>
+										{/* </center> */}
+									</button>
+								</a>
 							</div>
 						</div>
 					</div>
