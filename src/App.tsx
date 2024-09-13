@@ -132,9 +132,10 @@ const App = () => {
 						<span className='ml-2'>{points.toLocaleString()}</span>
 					</div>
 					<div className='text-base mt-2 flex items-center'>
-						<img src={trophy} width={24} height={24} />
+						{/* <img src={trophy} width={24} height={24} /> */}
 						<span className='ml-1'>
-							Bronze <Arrow size={18} className='ml-0 mb-1 inline-block' />
+						STON.fi ✖ The Open League
+						{/* <Arrow size={18} className='ml-0 mb-1 inline-block' /> */}
 						</span>
 					</div>
 				</div>
